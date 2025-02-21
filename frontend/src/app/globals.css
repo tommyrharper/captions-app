@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+.uploadButton {
+  padding: 1rem;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.image {
+  max-width: 80%;
+  margin-bottom: 1rem;
+}
+
+.caption {
+  font-size: 1.5rem;
+  text-align: center;
+} 
