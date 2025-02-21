@@ -1,23 +1,45 @@
 import torch
 from model import Decoder
-from transformers import GPT2Tokenizer
+from transformers import GPT2Tokenizer, CLIPProcessor, CLIPModel
+from PIL import Image
+import io
 
 device = (
     "mps"
     if torch.backends.mps.is_available()
     else "cuda" if torch.cuda.is_available() else "cpu"
 )
+clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
+clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = Decoder(n_head=2, n_inner=512).to(device)
 checkpoint = torch.load("model.pt", map_location=device)
 model.load_state_dict(checkpoint["model_state_dict"])
 
 
+def get_image_embedding(image):
+    # Move image inputs to same device as CLIP model
+    pil_image = Image.open(io.BytesIO(image))
+    image_inputs = clip_processor(images=pil_image, return_tensors="pt")
+    image_inputs = {
+        k: v.to(device) for k, v in image_inputs.items()
+    }
+
+    return image_inputs
+
+    # with torch.no_grad():
+    #     return self.clip_model.get_image_features(
+    #         pixel_values=image_inputs["pixel_values"]
+    #     ).squeeze(0)
+
+
 def generate_caption(image):
     if image is None:
         return "No image provided"
 
-    bing = auto_regression(model, image, tokenizer)
+    image_embedding = get_image_embedding(image)
+
+    bing = auto_regression(model, image_embedding, tokenizer)
 
     if bing is not None:
         return bing
