@@ -22,14 +22,10 @@ def generate_caption(image, clip_processor, clip_model, device, tokenizer, model
 
     image_embedding = get_image_embedding(image, clip_processor, clip_model, device)
 
-    return str(image_embedding)
 
-    bing = auto_regression(image_embedding, tokenizer, model)
+    caption = auto_regression(image_embedding, tokenizer, model)
 
-    if bing is not None:
-        return bing
-
-    return "Hey I am a caption my dude"
+    return caption
 
 
 def auto_regression(image_embedding, tokenizer, model, min_length=5, max_length=8):
