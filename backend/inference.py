@@ -50,8 +50,9 @@ def auto_regression(image_embedding, min_length=5, max_length=8):
         input_ids = torch.tensor([[tokenizer.bos_token_id]]).to(image_embedding.device)
         for i in range(max_length - 1):  # Fixed max length of 77 from training
             log_probs = model(image_embedding, input_ids)
-            return str(log_probs)
-            # next_token_logits = log_probs[:, -1, :]
+
+            next_token_logits = log_probs[:, -1, :]
+
 
             # Force non-EOS tokens for first min_length tokens
             if i < min_length:
@@ -62,6 +63,8 @@ def auto_regression(image_embedding, min_length=5, max_length=8):
                 next_token_logits[0, 785] = float("-inf")
 
             next_token = torch.argmax(next_token_logits, dim=-1)
+
+            return str(next_token)
 
             while next_token.item() in input_ids[0]:
                 next_token_logits[0, next_token.item()] = float("-inf")
