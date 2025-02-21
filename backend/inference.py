@@ -1,29 +1,29 @@
 import torch
 from model import Decoder
+from transformers import GPT2Tokenizer
 
 device = (
     "mps"
     if torch.backends.mps.is_available()
     else "cuda" if torch.cuda.is_available() else "cpu"
 )
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+model = Decoder(n_head=2, n_inner=512).to(device)
+checkpoint = torch.load("model.pt", map_location=device)
+model.load_state_dict(checkpoint["model_state_dict"])
+
 
 def generate_caption(image):
     if image is None:
         return "No image provided"
 
-    checkpoint = torch.load("model.pt", map_location=device)
-
-
-    model = Decoder(n_head=2, n_inner=512).to(device)
-    model.load_state_dict(checkpoint["model_state_dict"])
-
-    tokenizer = "gpt2"
     bing = auto_regression(model, image, tokenizer)
 
     if bing is not None:
         return bing
 
     return "Hey I am a caption my dude"
+
 
 def auto_regression(model, image_embedding, tokenizer, min_length=5):
     """Generate a caption for an image."""
