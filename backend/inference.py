@@ -26,7 +26,7 @@ def get_image_embedding(image):
     with torch.no_grad():
         return clip_model.get_image_features(
             pixel_values=image_inputs["pixel_values"]
-        ).squeeze(0)
+        )
 
 
 def generate_caption(image):
@@ -35,7 +35,7 @@ def generate_caption(image):
 
     image_embedding = get_image_embedding(image)
 
-    bing = auto_regression(model, image_embedding, tokenizer)
+    bing = auto_regression(image_embedding)
 
     if bing is not None:
         return bing
@@ -43,37 +43,36 @@ def generate_caption(image):
     return "Hey I am a caption my dude"
 
 
-def auto_regression(model, image_embedding, tokenizer, min_length=5):
+def auto_regression(image_embedding, min_length=5, max_length=8):
     """Generate a caption for an image."""
-    return "this some shit my man"
-    # model.eval()
-    # with torch.no_grad():
-    #     input_ids = torch.tensor([[tokenizer.bos_token_id]]).to(image_embedding.device)
+    model.eval()
+    with torch.no_grad():
+        input_ids = torch.tensor([[tokenizer.bos_token_id]]).to(image_embedding.device)
+        for i in range(max_length - 1):  # Fixed max length of 77 from training
+            log_probs = model(image_embedding, input_ids)
+            return str(log_probs)
+            # next_token_logits = log_probs[:, -1, :]
 
-    #     for i in range(77 - 1):  # Fixed max length of 77 from training
-    #         log_probs = model(image_embedding, input_ids)
-    #         next_token_logits = log_probs[:, -1, :]
+            # Force non-EOS tokens for first min_length tokens
+            if i < min_length:
+                next_token_logits[0, tokenizer.eos_token_id] = float("-inf")
 
-    #         # Force non-EOS tokens for first min_length tokens
-    #         if i < min_length:
-    #             next_token_logits[0, tokenizer.eos_token_id] = float("-inf")
+            # Prevent token 785 from following token 13
+            if input_ids[0, -1].item() == 13:
+                next_token_logits[0, 785] = float("-inf")
 
-    #         # Prevent token 785 from following token 13
-    #         if input_ids[0, -1].item() == 13:
-    #             next_token_logits[0, 785] = float("-inf")
+            next_token = torch.argmax(next_token_logits, dim=-1)
 
-    #         next_token = torch.argmax(next_token_logits, dim=-1)
+            while next_token.item() in input_ids[0]:
+                next_token_logits[0, next_token.item()] = float("-inf")
+                next_token = torch.argmax(next_token_logits, dim=-1)
 
-    #         while next_token.item() in input_ids[0]:
-    #             next_token_logits[0, next_token.item()] = float("-inf")
-    #             next_token = torch.argmax(next_token_logits, dim=-1)
+            # Stop if we predict the end token (after min_length)
+            if next_token.item() == tokenizer.eos_token_id:
+                break
 
-    #         # Stop if we predict the end token (after min_length)
-    #         if next_token.item() == tokenizer.eos_token_id:
-    #             break
+            input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
 
-    #         input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
+        caption = tokenizer.decode(input_ids[0], skip_special_tokens=True)
 
-    #     caption = tokenizer.decode(input_ids[0], skip_special_tokens=True)
-
-    #     return caption
+        return caption
