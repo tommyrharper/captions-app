@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import torch
 from transformers import GPT2Tokenizer, CLIPProcessor, CLIPModel
 from model import Decoder
-# from inference import generate_caption
+from inference import generate_caption
 
 device = (
     "mps"
@@ -29,10 +29,10 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload_image(file: UploadFile):
-    # image = await file.read()
-    # caption = generate_caption(image)
-    # return {"caption": caption}
-    return {"caption": "hey dude"}
+    image = await file.read()
+    caption = generate_caption(image, clip_processor, clip_model, device, tokenizer, model)
+    return {"caption": caption}
+    # return {"caption": "hey dude"}
 
 
 @app.get("/health")

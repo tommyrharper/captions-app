@@ -1,23 +1,10 @@
 import torch
-from model import Decoder
-from transformers import GPT2Tokenizer, CLIPProcessor, CLIPModel
 from PIL import Image
 import io
 
-device = (
-    "mps"
-    if torch.backends.mps.is_available()
-    else "cuda" if torch.cuda.is_available() else "cpu"
-)
-clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
-clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-model = Decoder(n_head=2, n_inner=512).to(device)
-checkpoint = torch.load("model.pt", map_location=device)
-model.load_state_dict(checkpoint["model_state_dict"])
 
 
-def get_image_embedding(image):
+def get_image_embedding(image, clip_processor, clip_model, device):
     # Move image inputs to same device as CLIP model
     pil_image = Image.open(io.BytesIO(image))
     image_inputs = clip_processor(images=pil_image, return_tensors="pt")
@@ -29,13 +16,15 @@ def get_image_embedding(image):
         )
 
 
-def generate_caption(image):
+def generate_caption(image, clip_processor, clip_model, device, tokenizer, model):
     if image is None:
         return "No image provided"
 
-    image_embedding = get_image_embedding(image)
+    image_embedding = get_image_embedding(image, clip_processor, clip_model, device)
 
-    bing = auto_regression(image_embedding)
+    return str(image_embedding)
+
+    bing = auto_regression(image_embedding, tokenizer, model)
 
     if bing is not None:
         return bing
@@ -43,7 +32,7 @@ def generate_caption(image):
     return "Hey I am a caption my dude"
 
 
-def auto_regression(image_embedding, min_length=5, max_length=8):
+def auto_regression(image_embedding, tokenizer, model, min_length=5, max_length=8):
     """Generate a caption for an image."""
     model.eval()
     with torch.no_grad():
