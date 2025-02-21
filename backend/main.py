@@ -14,8 +14,8 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload_image(file: UploadFile):
-    # image = await file.read()
-    caption = generate_caption()
+    image = await file.read()
+    caption = generate_caption(image)
     return {"caption": caption}
 
 
