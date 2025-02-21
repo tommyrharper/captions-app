@@ -2,9 +2,6 @@ import torch
 from torch import nn
 from transformers import GPT2Config, GPT2Model
 
-def thing():
-    return "yo"
-
 class Decoder(nn.Module):
     def __init__(
         self,

@@ -1,5 +1,5 @@
 import torch
-from model import thing, Decoder
+from model import Decoder
 
 device = (
     "mps"
@@ -13,12 +13,49 @@ def generate_caption(image):
 
     checkpoint = torch.load("model.pt", map_location=device)
 
-    bing = thing()
 
     model = Decoder(n_head=2, n_inner=512).to(device)
     model.load_state_dict(checkpoint["model_state_dict"])
+
+    tokenizer = "gpt2"
+    bing = auto_regression(model, image, tokenizer)
 
     if bing is not None:
         return bing
 
     return "Hey I am a caption my dude"
+
+def auto_regression(model, image_embedding, tokenizer, min_length=5):
+    """Generate a caption for an image."""
+    return "this some shit my man"
+    # model.eval()
+    # with torch.no_grad():
+    #     input_ids = torch.tensor([[tokenizer.bos_token_id]]).to(image_embedding.device)
+
+    #     for i in range(77 - 1):  # Fixed max length of 77 from training
+    #         log_probs = model(image_embedding, input_ids)
+    #         next_token_logits = log_probs[:, -1, :]
+
+    #         # Force non-EOS tokens for first min_length tokens
+    #         if i < min_length:
+    #             next_token_logits[0, tokenizer.eos_token_id] = float("-inf")
+
+    #         # Prevent token 785 from following token 13
+    #         if input_ids[0, -1].item() == 13:
+    #             next_token_logits[0, 785] = float("-inf")
+
+    #         next_token = torch.argmax(next_token_logits, dim=-1)
+
+    #         while next_token.item() in input_ids[0]:
+    #             next_token_logits[0, next_token.item()] = float("-inf")
+    #             next_token = torch.argmax(next_token_logits, dim=-1)
+
+    #         # Stop if we predict the end token (after min_length)
+    #         if next_token.item() == tokenizer.eos_token_id:
+    #             break
+
+    #         input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
+
+    #     caption = tokenizer.decode(input_ids[0], skip_special_tokens=True)
+
+    #     return caption
