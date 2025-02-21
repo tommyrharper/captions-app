@@ -17,3 +17,8 @@ async def upload_image(file: UploadFile):
     # image = await file.read()
     caption = generate_caption()
     return {"caption": caption}
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
