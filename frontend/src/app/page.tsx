@@ -17,6 +17,7 @@ export default function Home() {
     // Upload to backend
     const formData = new FormData()
     formData.append('file', file)
+    setCaption('Loading...')
 
     const response = await fetch('http://localhost:8000/upload', {
       method: 'POST',
