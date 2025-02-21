@@ -44,4 +44,4 @@ if not os.path.exists(gpt2_path):
     print(f"GPT2 model saved to {gpt2_path}")
 
 if not os.path.exists(model_path):
-    print("Model already exists locally") 
+    print("Model already exists locally")

@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from transformers import GPT2Config, GPT2Model
 
+
 class Decoder(nn.Module):
     def __init__(
         self,
@@ -86,4 +87,3 @@ class Decoder(nn.Module):
 
         # Return log probabilities
         return torch.log_softmax(logits, dim=-1)
-

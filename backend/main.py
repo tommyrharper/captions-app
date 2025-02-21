@@ -30,12 +30,12 @@ app.add_middleware(
 @app.post("/upload")
 async def upload_image(file: UploadFile):
     image = await file.read()
-    caption = generate_caption(image, clip_processor, clip_model, device, tokenizer, model)
+    caption = generate_caption(
+        image, clip_processor, clip_model, device, tokenizer, model
+    )
     return {"caption": caption}
-    # return {"caption": "hey dude"}
 
 
 @app.get("/health")
 async def health_check():
     return {"status": device}
-# 
