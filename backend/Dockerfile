@@ -1,9 +1,12 @@
 FROM continuumio/miniconda3
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY environment.yml .
+
+RUN conda env create -f environment.yml
+# Activate conda environment in shell
+SHELL ["conda", "run", "-n", "captions-app", "/bin/bash", "-c"]
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] 
+CMD ["conda", "run", "-n", "captions-app", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] 
