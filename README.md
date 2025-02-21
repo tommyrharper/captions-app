@@ -28,3 +28,11 @@ docker build --platform linux/amd64 -t zeroknowledgeltd/captions-app-backend:lat
 docker push zeroknowledgeltd/captions-app-frontend:latest
 docker push zeroknowledgeltd/captions-app-backend:latest
 ```
+
+## Downloading models
+
+```bash
+conda activate multimodal-captions
+cd backend
+python download_models.py
+```

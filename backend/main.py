@@ -11,9 +11,7 @@ device = (
 )
 clip_model = CLIPModel.from_pretrained("models/clip_model").to(device)
 clip_processor = CLIPProcessor.from_pretrained("models/clip_processor")
-# clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-# clip_processor = CLIPProcessor.from_pretrained("models/clip")
-# tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+tokenizer = GPT2Tokenizer.from_pretrained("models/gpt2_tokenizer")
 # model = Decoder(n_head=2, n_inner=512).to(device)
 # checkpoint = torch.load("model.pt", map_location=device)
 # model.load_state_dict(checkpoint["model_state_dict"])
@@ -39,3 +37,4 @@ async def upload_image(file: UploadFile):
 @app.get("/health")
 async def health_check():
     return {"status": device}
+# 
