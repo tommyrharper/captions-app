@@ -32,7 +32,7 @@ class Decoder(nn.Module):
         )
 
         # Use GPT2's token embedding weights
-        gpt2 = GPT2Model.from_pretrained("gpt2")
+        gpt2 = GPT2Model.from_pretrained("models/gpt2_model")
         self.token_embedding = gpt2.wte
 
         # Add dropout after embeddings
