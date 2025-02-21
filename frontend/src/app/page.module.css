@@ -30,6 +30,20 @@
 
 .uploadButton {
   background: linear-gradient(to right, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #8000ff);
-  padding: 8px;
+  color: white;
+  padding: 12px 24px;
   border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.uploadButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.hiddenInput {
+  display: none;
 } 
