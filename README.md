@@ -18,3 +18,13 @@ services:
     ports:
       - "8000:8000" 
 ```
+
+How to build and deploy on remote machine:
+
+```bash
+docker login -u username
+docker build --platform linux/amd64 -t zeroknowledgeltd/captions-app-frontend:latest ./frontend
+docker build --platform linux/amd64 -t zeroknowledgeltd/captions-app-backend:latest ./backend
+docker push zeroknowledgeltd/captions-app-frontend:latest
+docker push zeroknowledgeltd/captions-app-backend:latest
+```
