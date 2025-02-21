@@ -1,5 +1,5 @@
 import torch
-from model import thing
+from model import thing, Decoder
 
 device = (
     "mps"
@@ -15,8 +15,8 @@ def generate_caption(image):
 
     bing = thing()
 
-    # model = Decoder(n_head=2, n_inner=512).to(device)
-    # model.load_state_dict(checkpoint["model_state_dict"])
+    model = Decoder(n_head=2, n_inner=512).to(device)
+    model.load_state_dict(checkpoint["model_state_dict"])
 
     if bing is not None:
         return bing
