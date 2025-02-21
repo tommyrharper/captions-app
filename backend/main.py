@@ -9,8 +9,10 @@ device = (
     if torch.backends.mps.is_available()
     else "cuda" if torch.cuda.is_available() else "cpu"
 )
-clip_model = CLIPModel.from_pretrained("models/clip").to(device)
+clip_model = CLIPModel.from_pretrained("models/clip_model").to(device)
+clip_processor = CLIPProcessor.from_pretrained("models/clip_processor")
 # clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+# clip_processor = CLIPProcessor.from_pretrained("models/clip")
 # tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 # model = Decoder(n_head=2, n_inner=512).to(device)
 # checkpoint = torch.load("model.pt", map_location=device)
