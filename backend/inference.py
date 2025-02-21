@@ -21,16 +21,12 @@ def get_image_embedding(image):
     # Move image inputs to same device as CLIP model
     pil_image = Image.open(io.BytesIO(image))
     image_inputs = clip_processor(images=pil_image, return_tensors="pt")
-    image_inputs = {
-        k: v.to(device) for k, v in image_inputs.items()
-    }
+    image_inputs = {k: v.to(device) for k, v in image_inputs.items()}
 
-    return image_inputs
-
-    # with torch.no_grad():
-    #     return self.clip_model.get_image_features(
-    #         pixel_values=image_inputs["pixel_values"]
-    #     ).squeeze(0)
+    with torch.no_grad():
+        return clip_model.get_image_features(
+            pixel_values=image_inputs["pixel_values"]
+        ).squeeze(0)
 
 
 def generate_caption(image):
