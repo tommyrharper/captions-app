@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from inference import generate_caption
 
 app = FastAPI()
 
@@ -10,6 +11,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/upload")
 async def upload_image(file: UploadFile):
-    return {"caption": "Hey I am a caption"} 
+    # image = await file.read()
+    caption = generate_caption()
+    return {"caption": caption}
