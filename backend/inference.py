@@ -73,8 +73,6 @@ def auto_regression(image_embedding, min_length=5, max_length=8):
             if next_token.item() == tokenizer.eos_token_id:
                 break
 
-            return str(next_token)
-
             input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
 
         caption = tokenizer.decode(input_ids[0], skip_special_tokens=True)
