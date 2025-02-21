@@ -1,1 +1,4 @@
 __pycache__
+.next/
+next-env.d.ts
+tsconfig.json
