@@ -64,7 +64,6 @@ def auto_regression(image_embedding, min_length=5, max_length=8):
 
             next_token = torch.argmax(next_token_logits, dim=-1)
 
-            return str(next_token)
 
             while next_token.item() in input_ids[0]:
                 next_token_logits[0, next_token.item()] = float("-inf")
@@ -73,6 +72,8 @@ def auto_regression(image_embedding, min_length=5, max_length=8):
             # Stop if we predict the end token (after min_length)
             if next_token.item() == tokenizer.eos_token_id:
                 break
+
+            return str(next_token)
 
             input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=1)
 
