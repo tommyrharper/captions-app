@@ -14,7 +14,7 @@ clip_model = CLIPModel.from_pretrained("models/clip_model").to(device)
 clip_processor = CLIPProcessor.from_pretrained("models/clip_processor")
 tokenizer = GPT2Tokenizer.from_pretrained("models/gpt2_tokenizer")
 model = Decoder(n_head=2, n_inner=512).to(device)
-# checkpoint = torch.load("model.pt", map_location=device)
+checkpoint = torch.load("model.pt", map_location=device)
 # model.load_state_dict(checkpoint["model_state_dict"])
 
 app = FastAPI()
